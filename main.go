@@ -16,7 +16,10 @@ import (
 func main() {
 	printAPMEnv()
 	var tracingClient = apmhttp.WrapClient(http.DefaultClient)
-	tx := apm.DefaultTracer().StartTransaction("GET https://google.com", "request")
+	tracer := apm.DefaultTracer()
+	defer tracer.Flush(nil)
+
+	tx := tracer.StartTransaction("GET https://google.com", "request")
 	defer tx.End()
 
 	ctx := context.Background()
